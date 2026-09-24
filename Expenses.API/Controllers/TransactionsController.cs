@@ -1,0 +1,30 @@
+﻿using Expenses.API.Data;
+using Expenses.API.DTOs;
+using Expenses.API.Models;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Expenses.API.Controllers;
+[Route("api/[controller]")]
+[ApiController]
+public class TransactionsController(AppDbContext context) : ControllerBase
+{
+    private readonly AppDbContext _context = context;
+
+    [HttpPost]
+    public IActionResult CreateTransaction([FromBody] CreateTransactionDTO payload)
+    {
+        var transaction = new Transaction
+        {
+            Type = payload.Type,
+            Amount = payload.Amount,
+            Category = payload.Category,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        _context.Transactions.Add(transaction);
+        _context.SaveChanges();
+
+        return Ok();
+    }
+}
