@@ -27,4 +27,11 @@ public class TransactionsController(AppDbContext context) : ControllerBase
 
         return Ok();
     }
+
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var allTransactions = _context.Transactions.ToList();
+        return Ok(allTransactions);
+    }
 }
