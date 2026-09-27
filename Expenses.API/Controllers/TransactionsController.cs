@@ -34,4 +34,15 @@ public class TransactionsController(AppDbContext context) : ControllerBase
         var allTransactions = _context.Transactions.ToList();
         return Ok(allTransactions);
     }
+
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
+    {
+        var transaction = _context.Transactions.Find(id);
+
+        if (transaction is null)
+            return NotFound();
+
+        return Ok(transaction);
+    }
 }
