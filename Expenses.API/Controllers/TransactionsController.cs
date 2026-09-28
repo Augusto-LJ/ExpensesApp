@@ -64,4 +64,18 @@ public class TransactionsController(AppDbContext context) : ControllerBase
 
         return Ok(transaction);
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteTransaction(int id)
+    {
+        var transaction = _context.Transactions.Find(id);
+
+        if (transaction is null)
+            return NotFound();
+
+        _context.Transactions.Remove(transaction);
+        _context.SaveChanges();
+
+        return NoContent();
+    }
 }
