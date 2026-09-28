@@ -45,4 +45,23 @@ public class TransactionsController(AppDbContext context) : ControllerBase
 
         return Ok(transaction);
     }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateTransaction(int id, [FromBody] UpdateTransactionDTO payload)
+    {
+        var transaction = _context.Transactions.Find(id);
+
+        if (transaction is null)
+            return NotFound();
+
+        transaction.Type = payload.Type;
+        transaction.Amount = payload.Amount;
+        transaction.Category = payload.Category;
+        transaction.UpdatedAt = DateTime.UtcNow;
+
+        _context.Transactions.Update(transaction);
+        _context.SaveChanges();
+
+        return Ok(transaction);
+    }
 }
