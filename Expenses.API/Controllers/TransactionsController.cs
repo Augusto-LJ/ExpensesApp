@@ -1,44 +1,33 @@
-﻿using Expenses.API.Data;
-using Expenses.API.DTOs;
-using Expenses.API.Models;
+﻿using Expenses.API.DTOs;
+using Expenses.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Expenses.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class TransactionsController(AppDbContext context) : ControllerBase
+public class TransactionsController(ITransactionsService service) : ControllerBase
 {
-    private readonly AppDbContext _context = context;
+    private readonly ITransactionsService _service = service;
 
     [HttpPost]
-    public IActionResult CreateTransaction([FromBody] CreateTransactionDTO payload)
+    public IActionResult Create([FromBody] CreateTransactionDTO payload)
     {
-        var transaction = new Transaction
-        {
-            Type = payload.Type,
-            Amount = payload.Amount,
-            Category = payload.Category,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
+        var transaction = _service.Create(payload);
 
-        _context.Transactions.Add(transaction);
-        _context.SaveChanges();
-
-        return Ok();
+        return Ok(transaction);
     }
 
     [HttpGet]
     public IActionResult GetAll()
     {
-        var allTransactions = _context.Transactions.ToList();
+        var allTransactions = _service.GetAll();
         return Ok(allTransactions);
     }
 
     [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
-        var transaction = _context.Transactions.Find(id);
+        var transaction = _service.GetById(id);
 
         if (transaction is null)
             return NotFound();
@@ -47,34 +36,20 @@ public class TransactionsController(AppDbContext context) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateTransaction(int id, [FromBody] UpdateTransactionDTO payload)
+    public IActionResult Update(int id, [FromBody] UpdateTransactionDTO payload)
     {
-        var transaction = _context.Transactions.Find(id);
+        var newTransaction = _service.Update(id, payload);
 
-        if (transaction is null)
+        if (newTransaction is null)
             return NotFound();
 
-        transaction.Type = payload.Type;
-        transaction.Amount = payload.Amount;
-        transaction.Category = payload.Category;
-        transaction.UpdatedAt = DateTime.UtcNow;
-
-        _context.Transactions.Update(transaction);
-        _context.SaveChanges();
-
-        return Ok(transaction);
+        return Ok(newTransaction);
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeleteTransaction(int id)
+    public IActionResult Delete(int id)
     {
-        var transaction = _context.Transactions.Find(id);
-
-        if (transaction is null)
-            return NotFound();
-
-        _context.Transactions.Remove(transaction);
-        _context.SaveChanges();
+        _service.Delete(id);
 
         return NoContent();
     }
