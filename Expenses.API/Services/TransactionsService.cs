@@ -16,7 +16,7 @@ public class TransactionsService(AppDbContext context) : ITransactionsService
             Type = transaction.Type,
             Amount = transaction.Amount,
             Category = transaction.Category,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = transaction.CreatedAt,
             UpdatedAt = DateTime.UtcNow
         };
 

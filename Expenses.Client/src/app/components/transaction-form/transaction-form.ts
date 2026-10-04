@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { TransactionService } from '../../services/transaction';
 
 @Component({
   imports: [ReactiveFormsModule, CommonModule],
@@ -15,7 +17,7 @@ export class TransactionForm {
   expenseCategories = ['Food', 'Transportation', 'Utilities', 'Entertainment', 'Healthcare', 'Other'];
   availableCategories: string[] = [];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router, private translationService: TransactionService) {
     this.transactionForm = fb.group({
       type: ['Expense', Validators.required],
       category: ['', Validators.required],
@@ -35,7 +37,7 @@ export class TransactionForm {
   }
 
   cancel(): void {
-
+    this.router.navigate(['/transactions']);
   }
 
   onTypeChange(): void {
@@ -43,6 +45,13 @@ export class TransactionForm {
   }
 
   onSubmit(): void {
+    if (this.transactionForm.valid) {
+      const transactionData = this.transactionForm.value;
 
+      this.translationService.create(transactionData).subscribe(data => {
+        console.log('Transaction created:', data);
+        this.router.navigate(['/transactions']);
+      });
+    }
   }
 }
