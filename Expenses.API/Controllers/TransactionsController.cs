@@ -1,10 +1,12 @@
 ﻿using Expenses.API.DTOs;
 using Expenses.API.Services.Interfaces;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Expenses.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
+[EnableCors("AllowAll")]
 public class TransactionsController(ITransactionsService service) : ControllerBase
 {
     private readonly ITransactionsService _service = service;
