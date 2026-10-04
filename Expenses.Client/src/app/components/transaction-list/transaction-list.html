@@ -4,7 +4,7 @@
             <div class="card h-100 bg-success bg-opacity-75 text-white">
                 <div class="card-body">
                     <h5 class="card-title">Total income</h5>
-                    <h3 class="card-text">0</h3>
+                    <h3 class="card-text">{{ getTotalIncome() | currency }}</h3>
                 </div>
             </div>
         </div>
@@ -12,7 +12,7 @@
             <div class="card h-100 bg-danger bg-opacity-75 text-white">
                 <div class="card-body">
                     <h5 class="card-title">Total expenses</h5>
-                    <h3 class="card-text">0</h3>
+                    <h3 class="card-text">{{ getTotalExpense() | currency }}</h3>
                 </div>
             </div>
         </div>
@@ -20,7 +20,7 @@
             <div class="card h-100 bg-success bg-opacity-75 text-white">
                 <div class="card-body">
                     <h5 class="card-title">Net balance</h5>
-                    <h3 class="card-text">0</h3>
+                    <h3 class="card-text">{{ getNetBalance() | currency }}</h3>
                 </div>
             </div>
         </div>
@@ -42,8 +42,8 @@
                     <tr>
                         <td>{{ transaction.createdAt }}</td>
                         <td>{{ transaction.type }}</td>
-                        <td>{{ transaction.category }}</td>
-                        <td>{{ transaction.amount }}</td>
+                        <td [ngClass]="transaction.type === 'Income' ? 'text-success' : 'text-danger'">{{ transaction.category }}</td>
+                        <td [ngClass]="transaction.type === 'Income' ? 'text-success' : 'text-danger'">{{ transaction.amount | currency}}</td>
                         <td>
                             <button class="btn btn-sm btn-outline-primary">Edit</button>
                             <button class="btn btn-sm btn-outline-danger">Delete</button>
