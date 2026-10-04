@@ -1,10 +1,10 @@
 import { Component, computed, OnInit, signal } from '@angular/core';
 import { Transaction } from '../../models/transaction';
 import { TransactionService } from '../../services/transaction';
-import { CurrencyPipe, NgClass } from '@angular/common';
+import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 
 @Component({
-  imports: [CurrencyPipe, NgClass],
+  imports: [CurrencyPipe, NgClass, DatePipe],
   selector: 'app-transaction-list',
   styleUrl: './transaction-list.css',
   templateUrl: './transaction-list.html',
