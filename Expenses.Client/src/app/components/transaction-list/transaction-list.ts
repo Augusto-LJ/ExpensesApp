@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { Transaction } from '../../models/transaction';
 import { TransactionService } from '../../services/transaction';
 
@@ -9,28 +9,18 @@ import { TransactionService } from '../../services/transaction';
   templateUrl: './transaction-list.html',
 })
 
-export class TransactionList {
-  constructor(private transactionService: TransactionService) {
+export class TransactionList implements OnInit {
+  transactions = signal<Transaction[]>([]);
 
+  constructor(private transactionService: TransactionService) {}
+
+  ngOnInit(): void {
+    this.loadTransactions();
   }
 
-  transactions : Transaction[] = [
-    {
-      id: 1,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      category: 'Food',
-      type: 'Expense',
-      amount: 100,
-    },
-    {
-      id: 2,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      category: 'Lux',
-      type: 'Expense',
-      amount: 90,
-    }
-  ];
-
+  loadTransactions(): void {
+    this.transactionService.getAll().subscribe((data: Transaction[]) => {
+      this.transactions.set(data);
+    });
+  }
 }
