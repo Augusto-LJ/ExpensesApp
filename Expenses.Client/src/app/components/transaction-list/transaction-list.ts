@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { Transaction } from '../../models/transaction';
 import { TransactionService } from '../../services/transaction';
 import { CurrencyPipe, NgClass } from '@angular/common';
@@ -12,6 +12,19 @@ import { CurrencyPipe, NgClass } from '@angular/common';
 
 export class TransactionList implements OnInit {
   transactions = signal<Transaction[]>([]);
+  totalIncome = computed(() =>
+    this.transactions()
+      .filter((transaction) => transaction.type === 'Income')
+      .reduce((sum, transaction) => sum + transaction.amount, 0)
+  );
+
+  totalExpense = computed(() =>
+    this.transactions()
+      .filter((transaction) => transaction.type === 'Expense')
+      .reduce((sum, transaction) => sum + transaction.amount, 0)
+  );
+  
+  netBalance = computed(() => this.totalIncome() - this.totalExpense());
 
   constructor(private transactionService: TransactionService) {}
 
@@ -25,19 +38,4 @@ export class TransactionList implements OnInit {
     });
   }
 
-  getTotalIncome() : number {
-    return this.transactions()
-               .filter((t: Transaction) => t.type === 'Income')
-               .reduce((sum: number, t: Transaction) => sum + t.amount, 0);
-  }
-
-  getTotalExpense() : number {
-    return this.transactions()
-               .filter((t: Transaction) => t.type === 'Expense')
-               .reduce((sum: number, t: Transaction) => sum + t.amount, 0);
-  }
-
-  getNetBalance() : number {
-    return this.getTotalIncome() - this.getTotalExpense();
-  }
 }
