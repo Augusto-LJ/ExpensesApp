@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
+import { Transaction } from '../models/transaction';
 
 @Service()
-export class Transaction {
+export class TransactionService {
     private http = inject(HttpClient);
     private apiUrl = 'https://localhost:7023/api';
 

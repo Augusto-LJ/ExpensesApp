@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Transaction } from '../../models/transaction';
+import { TransactionService } from '../../services/transaction';
 
 @Component({
   imports: [],
@@ -9,6 +10,10 @@ import { Transaction } from '../../models/transaction';
 })
 
 export class TransactionList {
+  constructor(private transactionService: TransactionService) {
+
+  }
+
   transactions : Transaction[] = [
     {
       id: 1,
