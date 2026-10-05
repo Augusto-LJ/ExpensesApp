@@ -2,6 +2,7 @@ import { Component, computed, OnInit, signal } from '@angular/core';
 import { Transaction } from '../../models/transaction';
 import { TransactionService } from '../../services/transaction';
 import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   imports: [CurrencyPipe, NgClass, DatePipe],
@@ -26,7 +27,7 @@ export class TransactionList implements OnInit {
   
   netBalance = computed(() => this.totalIncome() - this.totalExpense());
 
-  constructor(private transactionService: TransactionService) {}
+  constructor(private transactionService: TransactionService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadTransactions();
@@ -38,4 +39,9 @@ export class TransactionList implements OnInit {
     });
   }
 
+  editTransaction(transaction: Transaction): void {
+    if (transaction.id) {
+      this.router.navigate(['/edit', transaction.id]);
+    }
+  }
 }

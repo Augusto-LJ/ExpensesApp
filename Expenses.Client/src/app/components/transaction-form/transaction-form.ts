@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TransactionService } from '../../services/transaction';
+import { Transaction } from '../../models/transaction';
 
 @Component({
   imports: [ReactiveFormsModule, CommonModule],
@@ -16,8 +17,14 @@ export class TransactionForm {
   incomeCategories = ['Salary', 'Business', 'Freelance', 'Investment', 'Other'];
   expenseCategories = ['Food', 'Transportation', 'Utilities', 'Entertainment', 'Healthcare', 'Other'];
   availableCategories: string[] = [];
+  editMode: boolean = false;
+  transactionId?: number;
 
-  constructor(private fb: FormBuilder, private router: Router, private translationService: TransactionService) {
+  constructor(private fb: FormBuilder,
+              private router: Router,
+              private transactionService: TransactionService,
+              private activatedRoute: ActivatedRoute
+            ) {
     this.transactionForm = fb.group({
       type: ['Expense', Validators.required],
       category: ['', Validators.required],
@@ -26,14 +33,20 @@ export class TransactionForm {
     });
   }
 
-    updateAvailableCategories(): void {
-    const type = this.transactionForm.get('type')?.value;
+    updateAvailableCategories(type: string): void {
     this.availableCategories = type === 'Income' ? this.incomeCategories : this.expenseCategories;
     this.transactionForm.patchValue({ category: '' });
   }
 
   ngOnInit(): void {
-    this.updateAvailableCategories();
+    const type = this.transactionForm.get('type')?.value;
+    this.updateAvailableCategories(type);
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
+    if (id) {
+      this.editMode = true;
+      this.transactionId = +id;
+      this.loadTransaction(this.transactionId);
+    }
   }
 
   cancel(): void {
@@ -41,17 +54,50 @@ export class TransactionForm {
   }
 
   onTypeChange(): void {
-    this.updateAvailableCategories();
+    const type = this.transactionForm.get('type')?.value;
+    this.updateAvailableCategories(type);
   }
 
   onSubmit(): void {
     if (this.transactionForm.valid) {
       const transactionData = this.transactionForm.value;
 
-      this.translationService.create(transactionData).subscribe(data => {
-        console.log('Transaction created:', data);
-        this.router.navigate(['/transactions']);
-      });
+      if (this.editMode && this.transactionId) {
+        this.transactionService.update(this.transactionId, transactionData).subscribe({
+          next: () => {
+            this.router.navigate(['/transactions']);
+          },
+          error: (error) => {
+            console.error('Error updating transaction:', error);
+          }
+        });
+      } else {
+        this.transactionService.create(transactionData).subscribe({
+          next: () => {
+            this.router.navigate(['/transactions']);
+          },
+          error: (error) => {
+            console.error('Error creating transaction:', error);
+            this.router.navigate(['/transactions']);
+          }
+        });
+      }
     }
+  }
+
+  loadTransaction(id: number): void {
+    this.transactionService.getById(id).subscribe({
+      next: (transaction: Transaction) => {
+        this.updateAvailableCategories(transaction.type);
+        this.transactionForm.patchValue({
+          type: transaction.type,
+          category: transaction.category,
+          amount: transaction.amount,
+        });
+      },
+      error: (error) => {
+        console.error('Error loading transaction:', error);
+      }
+    });
   }
 }
