@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth';
 })
 export class Signup {
   signupForm: FormGroup;
+  errorMessage: string | null = null;
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.signupForm = this.fb.group(
@@ -24,6 +25,11 @@ export class Signup {
         validators: this.passwordMatchValidator
       }
     );
+  }
+
+  hasError(controlName: string, errorName: string): boolean {
+    const control = this.signupForm.get(controlName);
+    return control ? control.hasError(errorName) && (control.touched || control.dirty) : false;
   }
 
   passwordMatchValidator(fg: FormGroup) {
@@ -43,6 +49,7 @@ export class Signup {
         },
         error: (error) => {
           console.error('Error during signup:', error);
+          this.errorMessage = error.error?.message || 'An error occurred during signup. Please try again.';
         }
       });
     }
