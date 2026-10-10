@@ -1,1 +1,46 @@
-<p>signup works!</p>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card mt-5">
+                <div class="card-header bg-primary bg-opacity-75">
+                    <h3 class="card-title mb-0 text-white">Sign Up</h3>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" class="form-control" formControlName="email">
+                            <div *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched" class="text-danger">
+                                Valid email is required.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" id="password" class="form-control" formControlName="password">
+                            @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
+                                <div class="text-danger">
+                                    Password is required.
+                                </div>
+                            }
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" id="confirmPassword" class="form-control" formControlName="confirmPassword">
+                            @if (signupForm.hasError('passwordMismatch') && signupForm.get('confirmPassword')?.touched) {
+                                <div class="text-danger">
+                                    Passwords do not match.
+                                </div>
+                            }
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary w-100" [disabled]="signupForm.invalid">Sign Up</button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <p>Already have an account? <a [routerLink]="'/login'">Login here</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

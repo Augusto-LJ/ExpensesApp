@@ -6,10 +6,10 @@ import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Service()
-export class Auth {
+export class AuthService {
     private http = inject(HttpClient);
     private router = inject(Router);
-    private apiUrl = 'https://localhost:7023/api';
+    private apiUrl = 'https://localhost:7023/api/Auth';
 
     login(credentials: User): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.apiUrl}/Login`, credentials)
