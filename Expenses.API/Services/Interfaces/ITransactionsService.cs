@@ -5,8 +5,8 @@ namespace Expenses.API.Services.Interfaces;
 
 public interface ITransactionsService
 {
-    Transaction Create(CreateTransactionDTO payload);
-    List<Transaction> GetAll();
+    Transaction Create(CreateTransactionDTO payload, int userId);
+    List<Transaction> GetAll(int userId);
     Transaction? GetById(int id);
     Transaction? Update(int id, UpdateTransactionDTO transaction);
     void Delete(int id);

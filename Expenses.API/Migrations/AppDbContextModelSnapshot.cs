@@ -47,7 +47,12 @@ namespace Expenses.API.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Transactions");
                 });
@@ -77,6 +82,20 @@ namespace Expenses.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Expenses.API.Models.Transaction", b =>
+                {
+                    b.HasOne("Expenses.API.Models.User", "User")
+                        .WithMany("Transactions")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Expenses.API.Models.User", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

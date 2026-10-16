@@ -9,7 +9,7 @@ public class TransactionsService(AppDbContext context) : ITransactionsService
 {
     private readonly AppDbContext _context = context;
 
-    public Transaction Create(CreateTransactionDTO transaction)
+    public Transaction Create(CreateTransactionDTO transaction, int userId)
     {
         var newTransaction = new Transaction
         {
@@ -17,7 +17,8 @@ public class TransactionsService(AppDbContext context) : ITransactionsService
             Amount = transaction.Amount,
             Category = transaction.Category,
             CreatedAt = transaction.CreatedAt,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            UserId = userId
         };
 
         _context.Transactions.Add(newTransaction);
@@ -37,9 +38,12 @@ public class TransactionsService(AppDbContext context) : ITransactionsService
         }
     }
 
-    public List<Transaction> GetAll()
+    public List<Transaction> GetAll(int userId)
     {
-        var allTransactions = _context.Transactions.ToList();
+        var allTransactions = _context.Transactions
+            .Where(t => t.UserId == userId)
+            .ToList();
+
         return allTransactions;
     }
 

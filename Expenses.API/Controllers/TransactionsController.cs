@@ -3,6 +3,7 @@ using Expenses.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Expenses.API.Controllers;
 [Route("api/[controller]")]
@@ -16,7 +17,15 @@ public class TransactionsController(ITransactionsService service) : ControllerBa
     [HttpPost]
     public IActionResult Create([FromBody] CreateTransactionDTO payload)
     {
-        var transaction = _service.Create(payload);
+        var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(nameIdentifierClaim))
+            return Unauthorized();
+
+        if (!int.TryParse(nameIdentifierClaim, out var userId))
+            return BadRequest("Invalid user identifier.");
+
+        var transaction = _service.Create(payload, userId);
 
         return Ok(transaction);
     }
@@ -24,7 +33,15 @@ public class TransactionsController(ITransactionsService service) : ControllerBa
     [HttpGet]
     public IActionResult GetAll()
     {
-        var allTransactions = _service.GetAll();
+        var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(nameIdentifierClaim))
+            return Unauthorized();
+
+        if (!int.TryParse(nameIdentifierClaim, out var userId))
+            return BadRequest("Invalid user identifier.");
+
+        var allTransactions = _service.GetAll(userId);
         return Ok(allTransactions);
     }
 
