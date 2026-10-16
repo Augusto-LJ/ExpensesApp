@@ -18,6 +18,16 @@ The project demonstrates end-to-end application development: account registratio
 
 Each transaction contains an `id`, `type`, `amount`, `category`, `createdAt`, and `updatedAt`. New transactions are associated with the authenticated user when they are created, and the list endpoint filters results by the user ID in the JWT.
 
+## 📸 Demo
+### Login page
+<img width="1919" height="990" alt="image" src="https://github.com/user-attachments/assets/645f8431-581d-4a53-be05-3d3ef25e6622" />
+
+### Registration page
+<img width="1919" height="993" alt="image" src="https://github.com/user-attachments/assets/598e2f52-993f-4542-ae05-2244c79e5bad" />
+
+### Transactions page
+<img width="1919" height="993" alt="image" src="https://github.com/user-attachments/assets/53a7ed7a-1f09-48fc-bd2b-f8d32cf69251" />
+
 ## 🛠️ Technology stack
 
 ### Frontend
